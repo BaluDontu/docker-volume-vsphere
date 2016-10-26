@@ -40,10 +40,10 @@ USER=root
 . ./misc/drone-scripts/cleanup.sh
 . ./misc/drone-scripts/dump_log.sh
 
-$SCP ./misc/drone-scripts/lock.sh $ESX:/tmp/
+$SCP -v ./misc/drone-scripts/lock.sh $USER@$ESX:/tmp/
 
 # Unlock performed in stop_build in cleanup.sh
-until $SSH $USER@$ESX "sh /tmp/lock.sh lock $BUILD_NUMBER"
+until $SSH -v $USER@$ESX "sh /tmp/lock.sh lock $BUILD_NUMBER"
  do
   sleep 30
   log "Retrying acquire lock @ $ESX"
