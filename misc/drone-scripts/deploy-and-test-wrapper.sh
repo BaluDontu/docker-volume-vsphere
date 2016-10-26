@@ -34,7 +34,7 @@ BUILD_NUMBER=$4
 export ESX=$1
 export VM1=$2
 export VM2=$3
-
+echo $ESX
 USER=root
 . ./misc/scripts/commands.sh
 . ./misc/drone-scripts/cleanup.sh
@@ -46,7 +46,7 @@ $SCP ./misc/drone-scripts/lock.sh $ESX:/tmp/
 until $SSH $USER@$ESX "sh /tmp/lock.sh lock $BUILD_NUMBER"
  do
   sleep 30
-  log "Retrying acquire lock"
+  log "Retrying acquire lock @ $ESX"
 done 
 
 dump_vm_info() {
