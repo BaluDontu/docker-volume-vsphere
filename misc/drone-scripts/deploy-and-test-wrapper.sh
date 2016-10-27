@@ -41,7 +41,7 @@ USER=root
 . ./misc/drone-scripts/dump_log.sh
 
 $SCP -v ./misc/drone-scripts/lock.sh $USER@$ESX:/tmp/
-
+cat /root/.ssh/id_rsa.pub
 # Unlock performed in stop_build in cleanup.sh
 until $SSH -v $USER@$ESX "sh /tmp/lock.sh lock $BUILD_NUMBER"
  do
