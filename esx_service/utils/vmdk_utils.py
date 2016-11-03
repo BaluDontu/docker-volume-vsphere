@@ -41,18 +41,21 @@ SPECIAL_FILES_REGEXP = r"\A.*-(delta|ctk|digest|flat)\.vmdk$"
 SNAP_SUFFIX_GLOB = "-[0-9][0-9][0-9][0-9][0-9][0-9].vmdk"
 
 
-def get_datastores():
+def get_datastores(doUpdate = False):
     """
     Returns a list of (name, url-name, dockvol_path), with an element per datastore
     where:
     'name' is datastore name (e.g. 'vsanDatastore') ,
     'url-name' is the last element of datastore URL (e.g. 'vsan:572904f8c031435f-3513e0db551fcc82')
     'dockvol-path; is a full path to 'dockvols' folder on datastore 
+
+    Params:
+    doUpdate - if set to True, will update the datastores in the cache by connecting to local ESX.
     """
 
     global datastores
     logging.debug("get_datastores: %s", datastores)
-    if datastores != None:
+    if datastores != None and not doUpdate:
         return datastores
 
     si = vmdk_ops.get_si()
