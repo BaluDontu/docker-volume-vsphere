@@ -45,7 +45,7 @@ def init_datastoreCache():
     Initializes the datastore cache with the list of datastores accessible from local ESX host.
     """
     global datastores
-    logging.debug("get_datastores: %s", datastores)
+    logging.debug("init_datastoreCache: %s", datastores)
 
     si = vmdk_ops.get_si()
 
