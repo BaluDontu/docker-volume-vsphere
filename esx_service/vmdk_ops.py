@@ -494,15 +494,6 @@ def get_vol_path(datastore, tenant_name=None):
     logging.info("Created %s", path)
     return path
 
-
-def known_datastores():
-    """returns names of known datastores"""
-    return [i[0] for i in vmdk_utils.get_datastores()]
-
-def get_latest_datastores():
-    """returns names of latest available datastores accessible from ESX host"""
-    return [i[0] for i in vmdk_utils.get_datastores(True)]
-
 def parse_vol_name(full_vol_name):
     """
     Parses volume[@datastore] and returns (volume, datastore)
@@ -582,14 +573,11 @@ def executeRequest(vm_uuid, vm_name, config_path, cmd, full_vol_name, opts):
         return err(str(ex))
     if not datastore:
         datastore = vm_datastore
-    elif datastore not in known_datastores():
-        # A datastore might be created when the vmdk_ops service is running
-        # This will get the latest list of the datastores by connecting to ESX host and updates its cache.
-        if datastore not in get_latest_datastores():
-            return err("Invalid datastore '%s'.\n" \
-                    "Known datastores: %s.\n" \
-                    "Default datastore: %s" \
-                    % (datastore, ", ".join(known_datastores()), vm_datastore))
+    elif not vmdk_utils.validate_datastore(datastore):
+        return err("Invalid datastore '%s'.\n" \
+                "Known datastores: %s.\n" \
+                "Default datastore: %s" \
+                % (datastore, ", ".join([i[0] for i in vmdk_utils.get_datastores()]), vm_datastore))
 
     # get /vmfs/volumes/<volid>/dockvols path on ESX:
     path = get_vol_path(datastore, tenant_name)
