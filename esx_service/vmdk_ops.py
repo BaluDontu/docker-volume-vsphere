@@ -592,7 +592,7 @@ def executeRequest(vm_uuid, vm_name, config_path, cmd, full_vol_name, opts):
         return err("Invalid datastore '%s'.\n" \
                 "Known datastores: %s.\n" \
                 "Default datastore: %s" \
-                % (datastore, ", ".join([i[0] for i in vmdk_utils.get_datastores()]), vm_datastore))
+                % (datastore, ", ".join(get_datastore_names_list), vm_datastore))
 
     # get /vmfs/volumes/<volid>/dockvols path on ESX:
     path = get_vol_path(datastore, tenant_name)
@@ -656,6 +656,10 @@ def get_si():
         except:
             connectLocalSi(force=True)
     return _service_instance
+
+def get_datastore_names_list():
+    """returns names of known datastores"""
+    return [i[0] for i in vmdk_utils.get_datastores()]
 
 def get_datastore_url(datastore):
     si = get_si()
