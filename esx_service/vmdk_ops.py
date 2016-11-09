@@ -107,8 +107,6 @@ MAX_SKIP_COUNT = 16       # max retries on VMCI Get Ops failures
 # Error codes
 VMCI_ERROR = -1 # VMCI C code uses '-1' to indicate failures
 ECONNABORTED = 103 # Error on non privileged client
-ERR_OSFS_MKDIR_READONLY = 30 # Error on creating a dockvols directory on a non-writable datastore
-ERR_OSFS_MKDIR_NOPERMISSION = 13 # Error on creating a dockvols directory on a datastore where permissions are denied
 
 # Volume data returned on Get request
 CAPACITY = 'capacity'
