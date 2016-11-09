@@ -494,28 +494,20 @@ def get_vol_path(datastore, tenant_name=None):
         logging.debug("Found %s, returning", path)
         return path, None
 
+    cmd = None
     if not os.path.isdir(dock_vol_path):
         # The osfs tools are usable for DOCK_VOLS_DIR on all datastores
         cmd = "{0} {1}".format(OSFS_MKDIR_CMD, dock_vol_path)
-        rc, out = RunCommand(cmd)
-        errMsg = None
-        if rc == ERR_OSFS_MKDIR_READONLY:
-            errMsg = "{0} creation failed - {1} not writable".format(DOCK_VOLS_DIR, datastore)
-        elif rc == ERR_OSFS_MKDIR_NOPERMISSION:
-            errMsg = "{0} creation failed - Permission denied on {1}".format(DOCK_VOLS_DIR, datastore)
-        else:
-            logging.warning("Failed to initialize volume path %s", path)
-            errMsg = "Failed to initialize volume path {0}".format(path)
-        #creation of dockvols directory failed.
-        if errMsg is not None:
-            return None, err(errMsg)
     if tenant_name and not os.path.isdir(path):
         cmd = "{0} {1}".format(MKDIR_CMD, path)
-        rc, out = RunCommand(cmd)
-        if rc != 0:
-           logging.warning("Failed to initialize volume path %s", path)
-           errMsg = "Failed to initialize volume path {0}".format(path)
-           return None, err(errMsg)
+    rc, out = RunCommand(cmd)
+    if rc != 0:
+        if tenant_name:
+            errMsg = "Failed to initialize volume path {0}".format(path)
+        else:
+            errMsg = "{0} creation failed - {1} on {2}".format(DOCK_VOLS_DIR, os.strerror(rc), datastore)
+        logging.warning(errMsg)
+        return None, err(errMsg)
 
     logging.info("Created %s", path)
     return path, None
