@@ -492,20 +492,22 @@ def get_vol_path(datastore, tenant_name=None):
         logging.debug("Found %s, returning", path)
         return path, None
 
-    cmd = None
     if not os.path.isdir(dock_vol_path):
         # The osfs tools are usable for DOCK_VOLS_DIR on all datastores
         cmd = "{0} {1}".format(OSFS_MKDIR_CMD, dock_vol_path)
-    if tenant_name and not os.path.isdir(path):
-        cmd = "{0} {1}".format(MKDIR_CMD, path)
-    rc, out = RunCommand(cmd)
-    if rc != 0:
-        if tenant_name:
-            errMsg = "Failed to initialize volume path {0}".format(path)
-        else:
+        rc, out = RunCommand(cmd)
+        if rc != 0:
             errMsg = "{0} creation failed - {1} on {2}".format(DOCK_VOLS_DIR, os.strerror(rc), datastore)
-        logging.warning(errMsg)
-        return None, err(errMsg)
+            logging.warning(errMsg)
+            return None, err(errMsg)
+    if tenant_name and not os.path.isdir(path):
+        # The mkdir command is used to create "tenant_name" folder inside DOCK_VOLS_DIR on "datastore"
+        cmd = "{0} {1}".format(MKDIR_CMD, path)
+        rc, out = RunCommand(cmd)
+        if rc != 0:
+            errMsg = "Failed to initialize volume path {0}".format(path)
+            logging.warning(errMsg)
+            return None, err(errMsg)
 
     logging.info("Created %s", path)
     return path, None
