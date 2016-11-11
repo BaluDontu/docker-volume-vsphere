@@ -505,7 +505,7 @@ def get_vol_path(datastore, tenant_name=None):
         cmd = "{0} {1}".format(MKDIR_CMD, path)
         rc, out = RunCommand(cmd)
         if rc != 0:
-            errMsg = "Failed to initialize volume path {0}".format(path)
+            errMsg = "Failed to initialize volume path {0} - {1}".format(path, out)
             logging.warning(errMsg)
             return None, err(errMsg)
 
